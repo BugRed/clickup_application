@@ -1,0 +1,105 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Poetry
+poetry.lock
+# (Descomente se quiser ignorar o lock file. Não recomendado para ambientes controlados)
+
+# Virtual environment (se estiver dentro do projeto)
+.env/
+.venv/
+venv/
+ENV/
+env/
+*.venv
+
+# VS Code settings
+.vscode/
+
+# PyCharm
+.idea/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static/
+*.pot
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+*.mo
+
+# Streamlit
+.streamlit/
+**/.streamlit/
+# Arquivos temporários de cache
+*.tftmp
+*.tfstate
+
+# Arquivos de ambiente
+.env
+.env.*
+!.env.example
+.env.local
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+mock/
+file_aux/

@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <style>
+        /* Cores do Tema */
+        :root {
+            --header-bg-color: #004d40; /* Verde Escuro */
+            --body-bg-color: #000000; /* Preto */
+            --sidebar-bg-color: #33691e; /* Verde Limão Escuro */
+            --sidebar-hover-color: #4CAF50; /* Verde um pouco mais claro para hover */
+            --text-color: #ffffff; /* Texto branco para contraste */
+            --green-highlight: #aed581; /* Um verde mais claro para detalhes, se necessário */
+        }
+
+        /* CSS Geral */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Evita scroll na página principal */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--body-bg-color);
+            color: var(--text-color); /* Texto branco padrão */
+        }
+
+        /* Layout Principal */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        /* Header (Barra de Navegação Superior) */
+        .navbar {
+            background-color: var(--header-bg-color) !important; /* Cor verde escura para o header */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between; /* Distribui os itens */
+            align-items: center;
+        }
+
+        .navbar-brand {
+            flex-grow: 1; /* Permite que o título ocupe o espaço e centralize */
+            text-align: center;
+            color: var(--text-color) !important; /* Texto branco */
+            font-size: 1.8rem; /* Aumenta um pouco o tamanho do título */
+            font-weight: bold;
+        }
+
+        .navbar-logo-container {
+            display: flex;
+            align-items: center;
+            /* Posiciona a logo e o menu suspenso à direita */
+            margin-left: auto;
+        }
+
+        .navbar-logo {
+            order: 2; /* Move a logo para a direita */
+            margin-left: 15px; /* Espaçamento da logo para a direita */
+        }
+
+        .navbar-nav {
+            order: 1; /* Mantém o menu à esquerda da logo dentro do container */
+            margin-right: 15px;
+        }
+
+        /* Ícone do Menu Lateral */
+        .navbar-toggle-icon {
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 2rem; /* Aumenta o tamanho do ícone */
+            margin-right: 20px;
+            /* Posiciona à esquerda */
+        }
+
+        /* Menu Lateral (Aside) */
+        .sidebar-container {
+            position: relative;
+            height: 100%;
+            transition: width 0.3s ease-in-out;
+            z-index: 10;
+        }
+        
+        .sidebar {
+            width: 0px;
+            height: 100%;
+            background-color: var(--sidebar-bg-color); /* Verde Limão Escuro */
+            color: var(--text-color);
+            padding-top: 20px;
+            transition: width 0.3s ease-in-out;
+            overflow-x: hidden;
+            white-space: nowrap;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
+        }
+
+        .sidebar.expanded {
+            width: 250px;
+            padding: 20px;
+        }
+
+        .sidebar-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--sidebar-hover-color); /* Verde mais claro no hover */
+        }
+
+        /* Conteúdo Principal (Iframe Centralizado) */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            padding: 20px; /* Adiciona um padding para o container principal */
+            background-color: var(--body-bg-color); /* Garante que o fundo seja preto aqui também */
+        }
+        
+        .iframe-container {
+            width: 90%; /* Largura do retângulo do iframe */
+            height: 90%; /* Altura do retângulo do iframe */
+            max-width: 1400px; /* Limita a largura máxima para não ficar muito grande */
+            max-height: 900px; /* Limita a altura máxima */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7); /* Sombra para o iframe */
+            border-radius: 10px; /* Bordas arredondadas */
+            overflow: hidden; /* Garante que o conteúdo do iframe não vaze */
+            background-color: #ffffff; /* Fundo branco para o iframe, se o Streamlit não carregar */
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Ajustes para o Navbar original do Bootstrap para remover a logo de lá */
+        .navbar .navbar-brand img {
+            display: none; /* Esconde a imagem de logo original do navbar-brand */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <span class="navbar-toggle-icon" id="sidebar-toggle-btn">☰</span>
+                
+                <a class="navbar-brand" href="#">ClickUp Dashboard</a>
+
+                <div class="navbar-logo-container">
+                    <ul class="navbar-nav"> {# Este é o menu suspenso à esquerda da logo #}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#" style="color: var(--text-color);">Início</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" style="color: var(--text-color);">Configurações</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" style="color: var(--text-color);">Sair</a>
+                        </li>
+                    </ul>
+                    <a class="navbar-logo" href="#">
+                        <img src="{% static 'clickup_consumer/img/logo.png' %}" onerror="this.src='https://placehold.co/40x40/000/FFF?text=CU'" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+                    </a>
+                </div>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="sidebar-container" id="sidebar-container">
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-item">Dashboard Geral</div>
+                    <div class="sidebar-item">Equipe</div>
+                    <div class="sidebar-item">Projetos</div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="iframe-container">
+                    <iframe src="http://localhost:8501"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+
+            sidebarToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>
