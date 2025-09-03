@@ -1,11 +1,12 @@
 import streamlit as st
 import requests
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
-
+load_dotenv(dotenv_path='.env.local')
 # --- Endereço da API ---
-# API_URL = "http://127.0.0.1:8000/api/tasks/"  #local
-API_URL ="https://clickup-application.onrender.com/api/tasks/" #production
+API_URL = os.getenv("API_URL") or ""
 
 # --- Funções de Lógica e Cálculo dos KPIs ---
 @st.cache_data
