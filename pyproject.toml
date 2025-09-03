@@ -19,6 +19,7 @@ dependencies = [
     "dotenv (>=0.9.9,<0.10.0)",
     "holidays (>=0.80,<0.81)",
     "gunicorn (>=23.0.0,<24.0.0)",
+    "dj-database-url (>=3.0.1,<4.0.0)",
 ]
 
 [tool.poetry]

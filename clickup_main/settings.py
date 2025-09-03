@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,15 +76,17 @@ WSGI_APPLICATION = 'clickup_main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+# Use o pacote dj_database_url para parsear a variável de ambiente DATABASE_URL
+# A variável DATABASE_URL contém a string de conexão completa
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('SUPABASE_DB_NAME'),
-        'USER': os.environ.get('SUPABASE_DB_USER'),
-        'PASSWORD': os.environ.get('SUPABASE_DB_PASSWORD'),
-        'HOST': os.environ.get('SUPABASE_DB_HOST'),
-        'PORT': os.environ.get('SUPABASE_DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+    )
 }
 
 
