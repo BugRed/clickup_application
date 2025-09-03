@@ -4,7 +4,8 @@ import pandas as pd
 
 
 # --- Endereço da API ---
-API_URL = "http://127.0.0.1:8000/api/tasks/"
+# API_URL = "http://127.0.0.1:8000/api/tasks/"  #local
+API_URL ="https://clickup-application.onrender.com/api/tasks/" #production
 
 # --- Funções de Lógica e Cálculo dos KPIs ---
 @st.cache_data
