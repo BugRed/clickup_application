@@ -497,7 +497,7 @@ if not df_full.empty:
     # Cria o DataFrame base com log diário
     df_daily_log = create_daily_log(df_full)
     
-    df_daily_log.to_csv('df_debug.csv', sep=',')
+    # df_daily_log.to_csv('df_debug.csv', sep=',')
     
     # --- Seção de Filtros ---
     st.subheader("🔍 Segmentação de Dados")

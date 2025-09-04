@@ -385,37 +385,9 @@ def create_daily_log(df):
     # Cria o novo DataFrame a partir da lista de registros
     df_daily_log = pd.DataFrame(daily_records)
     
-    df_daily_log.to_csv("daily-debug.csv", sep=',')
+    # df_daily_log.to_csv("daily-debug.csv", sep=',')
     
     return df_daily_log
-
-
-# Exemplo de uso e teste da função
-if __name__ == "__main__":
-    # Criar dados de exemplo para testar
-    data_exemplo = {
-        'clickup_id': ['TASK01', 'TASK02', 'TASK03'],
-        'parent_id': [None, None, None],  # Todas são tasks principais
-        'tempo_estimado': [16, 24, 8],
-        'data_criacao': ['2024-09-08', '2024-09-09', '2024-09-10'],
-        'data_fechamento': ['2024-09-15', '2024-09-20', '2024-09-10'],
-        'nome': ['Task 01', 'Task 02', 'Task 03'],
-        'responsavel': ['João', 'Maria', 'Pedro']
-    }
-    
-    df_exemplo = pd.DataFrame(data_exemplo)
-    
-    # Testa a função
-    resultado = create_daily_log(df_exemplo)
-    
-    print("Resultado do teste:")
-    print(resultado[['nome', 'registro', 'registro_data', 'registro_horas']].to_string())
-    
-    # Exemplo específico mencionado:
-    # TASK01: 16h, criada 08/09, termina 15/09
-    # Dias úteis: 08/09, 09/09, 10/09, 11/09, 12/09 (pula 13 e 14), 15/09 = 6 dias
-    # Horas por dia: 16h / 6 dias = 2,667h por dia
-
 
 
 def calculate_daily_capacity_for_person_list(df_day_filtered, selected_responsible, selected_list):

@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
+    'knox',    
     
     # Consumidor da API interna
     'clickup_consumer',
@@ -38,6 +39,24 @@ INSTALLED_APPS = [
     'rest_framework',
     'clickup_dashboards.apps.ClickupDashboardsConfig', 
 ]
+
+# Configurações de autenticação
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+
+# Configuração para o django-rest-knox
+REST_KNOX = {
+  # Define o tempo de expiração do token para 10 anos (em segundos)
+  'TOKEN_TTL': None
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -174,7 +174,7 @@ def transform_list_data(df: pd.DataFrame) -> pd.DataFrame:
             'priority_color': 'Cor_Prioridade',
             'tags': 'Tags',
             'space': 'Espaço',
-            'date_created': 'Data_Criacao',
+            'date_created': 'Data_Criacao', # colocar start_date
             'due_date': 'Prazo',
             'date_closed': 'Data_Fechamento',
             'time_estimate': 'time_estimate',

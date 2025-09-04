@@ -20,6 +20,7 @@ dependencies = [
     "holidays (>=0.80,<0.81)",
     "gunicorn (>=23.0.0,<24.0.0)",
     "dj-database-url (>=3.0.1,<4.0.0)",
+    "django-rest-knox (>=5.0.2,<6.0.0)",
 ]
 
 [tool.poetry]

@@ -1,9 +1,8 @@
 # clickup_consumer/urls.py
 
 from django.urls import path
-from . import views
+from .views import TaskListAPIView
 
 urlpatterns = [
-    # Mapeia apenas 'tasks/' para a view da API
-    path('tasks/', views.task_list_api, name='task_list_api'),
+    path('tasks/', TaskListAPIView.as_view(), name='tasks-api'),
 ]
