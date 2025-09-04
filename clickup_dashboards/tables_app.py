@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 import requests
 from datetime import timedelta, datetime
-import holidays # Importa a biblioteca de feriados
+import holidays
+from utils.api_conection import fetch_tasks_from_api
+
 
 # --- Configuração da Página ---
 st.set_page_config(
@@ -13,31 +15,6 @@ st.set_page_config(
 # --- Título e Descrição da Página ---
 st.title("Tabelas de Tarefas do ClickUp")
 st.markdown("Visualize as tarefas em formato de tabela para conferência e análise detalhada.")
-
-# --- Endereço da API ---
-API_URL = "http://127.0.0.1:8000/api/tasks/"
-
-# --- Função de Consumo da API (com cache) ---
-@st.cache_data
-def fetch_tasks_from_api():
-    """Busca os dados da API e cria um DataFrame com cache."""
-    try:
-        response = requests.get(API_URL)
-        response.raise_for_status()  # Lança um erro para códigos de status HTTP 4xx ou 5xx
-        data = response.json()
-        tasks = data.get("tasks", [])
-        
-        if not tasks:
-            st.warning("A API não retornou dados. Verifique se o banco de dados está populado e o servidor do Django está rodando.")
-            return pd.DataFrame()
-            
-        df = pd.DataFrame(tasks)
-        return df
-    except requests.exceptions.RequestException as e:
-        st.error(f"Erro ao conectar com a API: {e}")
-        st.warning("Verifique se o servidor do Django está rodando em **http://127.0.0.1:8000**.")
-        return pd.DataFrame()
-
 
 def create_daily_log(df):
     """
