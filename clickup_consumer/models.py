@@ -6,8 +6,6 @@ class ClickUpTask(models.Model):
     Este modelo representa a tabela denormalizada
     com os dados transformados da API do ClickUp.
     """
-    # Use um CharField para o ID único do ClickUp
-    # Evita conflitos com o ID nativo do Django
     clickup_id = models.CharField(
         max_length=255, 
         unique=True,
@@ -25,10 +23,14 @@ class ClickUpTask(models.Model):
     )
     
     data_criacao = models.DateField(
+        null=True,
+        blank=True,
         verbose_name="Data de Criação"
     )
     
     data_atualizacao = models.DateField(
+        null=True,
+        blank=True,
         verbose_name="Data de Atualização"
     )
     
@@ -142,6 +144,9 @@ class ClickUpTask(models.Model):
         blank=True,
         verbose_name="Data de Término Real"
     )
+    
+    class Meta:
+        db_table = 'clickup_consumer_clickuptask'
 
     def __str__(self):
         return self.task_nome

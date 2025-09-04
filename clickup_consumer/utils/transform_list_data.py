@@ -1,5 +1,9 @@
+# clickup_consumer/utils/transform_list_data.py
+
 import pandas as pd
 import pytz
+
+# ... (todas as funções auxiliares como get_task_status, get_task_creator, etc. permanecem as mesmas)
 
 def get_task_status(status_obj):
     if isinstance(status_obj, dict):
@@ -121,35 +125,46 @@ def transform_list_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     try: 
         # Extração de objetos
-        df['status'] = df['status'].apply(get_task_status)
-        df['creator'] = df['creator'].apply(get_task_creator)
-        df['assignees'] = df['assignees'].apply(get_single_assignee_email)
-        df['priority_color'] = df['priority'].apply(get_task_priority_color)
-        df['priority'] = df['priority'].apply(get_task_priority)
-        df['tags'] = df['tags'].apply(get_task_tags)
-        df['space'] = df['space'].apply(get_space_id)
+        if 'status' in df.columns:
+            df['status'] = df['status'].apply(get_task_status)
+        if 'creator' in df.columns:
+            df['creator'] = df['creator'].apply(get_task_creator)
+        if 'assignees' in df.columns:
+            df['assignees'] = df['assignees'].apply(get_single_assignee_email)
+        if 'priority' in df.columns:
+            df['priority_color'] = df['priority'].apply(get_task_priority_color)
+            df['priority'] = df['priority'].apply(get_task_priority)
+        if 'tags' in df.columns:
+            df['tags'] = df['tags'].apply(get_task_tags)
+        if 'space' in df.columns:
+            df['space'] = df['space'].apply(get_space_id)
 
         # Extração de campos customizados, com tratamento de exceção
-        df['Nome da Entrega'] = df['custom_fields'].apply(lambda x: get_name_from_nome_da_entrega(x, "label"))        
-        df['entrega_color'] = df['custom_fields'].apply(lambda x: get_name_from_nome_da_entrega(x, "color")) 
-        df['Data de término real'] = df['custom_fields'].apply(get_real_end_date_value)
+        if 'custom_fields' in df.columns:
+            df['Nome da Entrega'] = df['custom_fields'].apply(lambda x: get_name_from_nome_da_entrega(x, "label"))        
+            df['entrega_color'] = df['custom_fields'].apply(lambda x: get_name_from_nome_da_entrega(x, "color")) 
+            df['Data de término real'] = df['custom_fields'].apply(get_real_end_date_value)
 
         # Tratamento das datas
-        df['Data de término real'] = df['Data de término real'].apply(convert_unix_timestamp_to_date)
-        df['start_date'] = df['start_date'].apply(convert_unix_timestamp_to_date)
-        df['due_date'] = df['due_date'].apply(convert_unix_timestamp_to_date)
-        df['date_updated'] = df['date_updated'].apply(convert_unix_timestamp_to_date)
-        df['date_closed'] = df['date_closed'].apply(convert_unix_timestamp_to_date)
-        df['date_done'] = df['date_done'].apply(convert_unix_timestamp_to_date)
-        df['date_created'] = df['date_created'].apply(convert_unix_timestamp_to_date)
+        if 'Data de término real' in df.columns:
+            df['Data de término real'] = df['Data de término real'].apply(convert_unix_timestamp_to_date)
+        if 'start_date' in df.columns:
+            df['start_date'] = df['start_date'].apply(convert_unix_timestamp_to_date)
+        if 'due_date' in df.columns:
+            df['due_date'] = df['due_date'].apply(convert_unix_timestamp_to_date)
+        if 'date_updated' in df.columns:
+            df['date_updated'] = df['date_updated'].apply(convert_unix_timestamp_to_date)
+        if 'date_closed' in df.columns:
+            df['date_closed'] = df['date_closed'].apply(convert_unix_timestamp_to_date)
+        if 'date_done' in df.columns:
+            df['date_done'] = df['date_done'].apply(convert_unix_timestamp_to_date)
+        if 'date_created' in df.columns:
+            df['date_created'] = df['date_created'].apply(convert_unix_timestamp_to_date)
 
         # Converte para segundos e horas
-        df['time_estimate'] = df['time_estimate'].apply(convert_estimate_to_hours)
+        if 'time_estimate' in df.columns:
+            df['time_estimate'] = df['time_estimate'].apply(convert_estimate_to_hours)
 
-        
-        # Criação da coluna registro
-        # df['Registro'] = 
-        
         
         # Limpeza e seleção de colunas
         columns_to_drop = [
@@ -163,23 +178,32 @@ def transform_list_data(df: pd.DataFrame) -> pd.DataFrame:
         existing_columns_to_drop = [col for col in columns_to_drop if col in df.columns]
         df.drop(columns=existing_columns_to_drop, inplace=True)
         
-        # Renomeia e reordena colunas para melhor clareza
+        # Renomeia e reordena colunas para melhor clareza.
+        # TODAS as renomeações devem acontecer aqui.
         df.rename(columns={
-            'id': 'ID',
-            'name': 'Task_Nome',
-            'status': 'Status',
-            'creator': 'Criado_por',
-            'assignees': 'Responsavel',
-            'priority': 'Prioridade',
-            'priority_color': 'Cor_Prioridade',
-            'tags': 'Tags',
-            'space': 'Espaço',
-            'date_created': 'Data_Criacao', # colocar start_date
-            'due_date': 'Prazo',
-            'date_closed': 'Data_Fechamento',
-            'time_estimate': 'time_estimate',
-            'date_done': 'Data_Done',
-            'parent': 'parent_id'
+            'id': 'clickup_id',
+            'name': 'task_nome',
+            'status': 'status',
+            'creator': 'criado_por',
+            'assignees': 'responsavel',
+            'priority': 'prioridade',
+            'priority_color': 'cor_prioridade',
+            'tags': 'tags',
+            'space': 'espaco',
+            'date_created': 'data_criacao',
+            'start_date': 'data_inicio',
+            'due_date': 'prazo',
+            'date_closed': 'data_fechamento',
+            'time_estimate': 'tempo_estimado',
+            'date_done': 'data_done',
+            'parent': 'parent_id',
+            'points': 'pontos',
+            'team_id': 'id_equipe',
+            'permission_level': 'nivel_permissao',
+            'Nome da Entrega': 'nome_da_entrega',
+            'entrega_color': 'cor_entrega',
+            'Data de término real': 'data_de_termino_real',
+            'date_updated': 'data_atualizacao'
         }, inplace=True)
 
         return df

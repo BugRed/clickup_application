@@ -10,7 +10,7 @@ from datetime import datetime
 # Importa as funções do consumidor de API e o modelo
 from clickup_consumer.api_consumer import _fetch_and_transform_single_list, calculate_and_update_main_task_time_estimate
 from clickup_consumer.models import ClickUpTask
-
+from clickup_consumer.utils.transform_list_data import transform_list_data
 
 class Command(BaseCommand):
     """
@@ -62,8 +62,9 @@ class Command(BaseCommand):
                     self.stderr.write(self.style.ERROR(f"- {err}"))
             return
 
-        # Calcula e atualiza as estimativas de tempo
+        # Aplica a única transformação necessária: o cálculo da estimativa de tempo
         final_df = calculate_and_update_main_task_time_estimate(all_lists_df)
+        final_df.to_csv('debug.csv', sep=',')
 
         self.stdout.write(f"Iniciando a população do banco de dados com {len(final_df)} registros...")
         
@@ -73,40 +74,38 @@ class Command(BaseCommand):
         self.stdout.write("Registros antigos apagados.")
         
         # Passo 2: Salvar todas as tarefas
-        # Itera sobre o DataFrame e salva cada registro no banco de dados
         for index, row in final_df.iterrows():
             try:
-                # Mapeia as colunas do DataFrame para os campos do modelo,
-                # garantindo que NaN e outros valores nulos sejam tratados corretamente.
+                # O mapeamento do dicionário foi refeito para corresponder
+                # aos nomes de campo exatos no models.py
                 task_data = {
-                    'clickup_id': str(row.get('ID')),
-                    'task_nome': str(row.get('Task_Nome', 'N/A')),
-                    'status': str(row.get('Status', 'N/A')),
-                    'data_criacao': pd.to_datetime(row.get('Data_Criacao'), errors='coerce'),
-                    'data_atualizacao': pd.to_datetime(row.get('date_updated'), errors='coerce'),
-                    'data_fechamento': pd.to_datetime(row.get('Data_Fechamento'), errors='coerce'),
-                    'data_done': pd.to_datetime(row.get('Data_Done'), errors='coerce'),
-                    'arquivado': bool(row.get('archived')),
-                    'criado_por': str(row.get('Criado_por', 'N/A')),
-                    'responsavel': str(row.get('Responsavel', 'N/A')),
-                    'tags': str(row.get('Tags', 'N/A')) if not pd.isna(row.get('Tags')) else None,
+                    'clickup_id': str(row.get('clickup_id')),
+                    'task_nome': str(row.get('task_nome', 'N/A')),
+                    'status': str(row.get('status', 'N/A')),
+                    'data_criacao': pd.to_datetime(row.get('data_criacao'), errors='coerce'),
+                    'data_atualizacao': pd.to_datetime(row.get('data_atualizacao'), errors='coerce'),
+                    'data_fechamento': pd.to_datetime(row.get('data_fechamento'), errors='coerce'),
+                    'data_done': pd.to_datetime(row.get('data_done'), errors='coerce'),
+                    'arquivado': bool(row.get('arquivado')),
+                    'criado_por': str(row.get('criado_por', 'N/A')),
+                    'responsavel': str(row.get('responsavel', 'N/A')),
+                    'tags': str(row.get('tags', 'N/A')) if not pd.isna(row.get('tags')) else None,
                     'parent_id': str(row.get('parent_id')) if not pd.isna(row.get('parent_id')) else None,
-                    'prioridade': str(row.get('Prioridade', 'N/A')),
-                    'prazo': pd.to_datetime(row.get('Prazo'), errors='coerce'),
-                    'data_inicio': pd.to_datetime(row.get('start_date'), errors='coerce'),
-                    'pontos': float(row.get('points')) if not pd.isna(row.get('points')) else None,
-                    'tempo_estimado': float(row.get('time_estimate')) if not pd.isna(row.get('time_estimate')) else None,
-                    'id_equipe': str(row.get('team_id')),
-                    'nivel_permissao': str(row.get('permission_level', 'N/A')),
-                    'espaco': str(row.get('Espaço', 'N/A')),
+                    'prioridade': str(row.get('prioridade', 'N/A')),
+                    'prazo': pd.to_datetime(row.get('prazo'), errors='coerce'),
+                    'data_inicio': pd.to_datetime(row.get('data_inicio'), errors='coerce'),
+                    'pontos': float(row.get('pontos')) if not pd.isna(row.get('pontos')) else None,
+                    'tempo_estimado': float(row.get('tempo_estimado')) if not pd.isna(row.get('tempo_estimado')) else None,
+                    'id_equipe': str(row.get('id_equipe')),
+                    'nivel_permissao': str(row.get('nivel_permissao', 'N/A')),
+                    'espaco': str(row.get('espaco', 'N/A')),
                     'lista_origem': str(row.get('List_Origem', 'N/A')),
-                    'cor_prioridade': str(row.get('Cor_Prioridade', 'N/A')),
-                    'nome_da_entrega': str(row.get('Nome da Entrega', 'N/A')),
-                    'cor_entrega': str(row.get('entrega_color', 'N/A')),
-                    'data_de_termino_real': pd.to_datetime(row.get('Data de término real'), errors='coerce')
+                    'cor_prioridade': str(row.get('cor_prioridade', 'N/A')),
+                    'nome_da_entrega': str(row.get('nome_da_entrega', 'N/A')),
+                    'cor_entrega': str(row.get('cor_entrega', 'N/A')),
+                    'data_de_termino_real': pd.to_datetime(row.get('data_de_termino_real'), errors='coerce')
                 }
             
-
                 # Cria o registro no banco de dados
                 ClickUpTask.objects.create(**task_data)
                 

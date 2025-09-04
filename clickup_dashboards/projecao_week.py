@@ -663,9 +663,8 @@ if not df_full.empty:
                     df_tasks_display['Horas no Período'] = df_tasks_display['total_horas_periodo'].apply(lambda x: f"{x:.1f}h")
                     
                     # Formata datas
-                    df_tasks_display['Data Criação'] = pd.to_datetime(df_tasks_display['data_criacao']).dt.strftime('%d/%m/%Y')
-                    df_tasks_display['Data Início'] = pd.to_datetime(df_tasks_display['start_date']).dt.strftime('%d/%m/%Y') if 'start_date' in df_tasks_display.columns else 'N/A'
-                    df_tasks_display['Prazo'] = pd.to_datetime(df_tasks_display['due_date']).dt.strftime('%d/%m/%Y') if 'due_date' in df_tasks_display.columns else 'N/A'
+                    df_tasks_display['Data Início'] = pd.to_datetime(df_tasks_display['data_inicio']).dt.strftime('%d/%m/%Y')
+                    df_tasks_display['Prazo'] = pd.to_datetime(df_tasks_display['prazo']).dt.strftime('%d/%m/%Y') if 'prazo' in df_tasks_display.columns else 'N/A'
                     
                     # Define cor de status baseado na situação da tarefa
                     def get_task_status_emoji(row):
@@ -701,7 +700,7 @@ if not df_full.empty:
                     display_columns = [
                         'ID ClickUp', 'Nome da Tarefa', 'Lista', 'Responsável', 
                         'Status Emoji', 'Prioridade Emoji', 'Horas no Período',
-                        'Data Criação', 'Data Início', 'Prazo'
+                        'Data Início', 'Prazo'
                     ]
                     
                     # Renomeia colunas para exibição final
@@ -716,7 +715,7 @@ if not df_full.empty:
                     # Ordena por horas no período (decrescente) e depois por data de criação
                     # Primeiro ordena o DataFrame original antes de selecionar as colunas
                     df_tasks_display_sorted = df_tasks_display.sort_values(
-                        ['total_horas_periodo', 'data_criacao'], 
+                        ['total_horas_periodo', 'data_inicio'], 
                         ascending=[False, False]
                     )
                     

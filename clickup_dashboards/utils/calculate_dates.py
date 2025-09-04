@@ -189,7 +189,7 @@ def calculate_lead_time(df):
     """
     Calcula o tempo médio de fechamento (lead time) das tarefas concluídas.
     
-    Lead time = diferença entre data_fechamento e data_criacao
+    Lead time = diferença entre data_fechamento e data_inicio
     
     Args:
         df (pd.DataFrame): DataFrame com as tarefas
@@ -203,7 +203,7 @@ def calculate_lead_time(df):
     
     # Converte as colunas de data para datetime
     df['data_fechamento'] = pd.to_datetime(df['data_fechamento'], errors='coerce')
-    df['data_criacao'] = pd.to_datetime(df['data_criacao'], errors='coerce')
+    df['data_inicio'] = pd.to_datetime(df['data_inicio'], errors='coerce')
     
     # Filtra apenas tarefas que foram concluídas (têm data de fechamento)
     df_completed = df[df['data_fechamento'].notnull()]
@@ -214,7 +214,7 @@ def calculate_lead_time(df):
     # Calcula o lead time em dias para cada tarefa concluída
     # dt.days extrai apenas os dias da diferença entre datas
     df_completed['lead_time'] = (
-        df_completed['data_fechamento'] - df_completed['data_criacao']
+        df_completed['data_fechamento'] - df_completed['data_inicio']
     ).dt.days
     
     # Calcula a média do lead time
@@ -254,7 +254,7 @@ def calculate_all_metrics(df):
     """
     # Lista das colunas obrigatórias para os cálculos
     required_columns = [
-        'prazo', 'data_fechamento', 'data_criacao', 'tempo_estimado',
+        'prazo', 'data_fechamento', 'data_inicio', 'tempo_estimado',
         'parent_id', 'responsavel', 'tags', 'lista_origem'
     ]
     
@@ -303,7 +303,7 @@ def create_daily_log(df):
     Cria uma nova tabela de log diário a partir do DataFrame de tarefas.
     
     A função calcula as horas diárias baseado na duração real da tarefa
-    (data_criacao até data_fechamento), distribuindo o tempo_estimado
+    (data_inicio até data_fechamento), distribuindo o tempo_estimado
     uniformemente pelos dias úteis disponíveis.
 
     Args:
@@ -317,13 +317,13 @@ def create_daily_log(df):
     main_tasks = df[df['parent_id'].isnull()].copy()
     
     # Converte colunas para os tipos adequados
-    main_tasks['data_criacao'] = pd.to_datetime(main_tasks['data_criacao'], errors='coerce')
+    main_tasks['data_inicio'] = pd.to_datetime(main_tasks['data_inicio'], errors='coerce')
     main_tasks['data_fechamento'] = pd.to_datetime(main_tasks['data_fechamento'], errors='coerce')
     main_tasks['tempo_estimado'] = pd.to_numeric(main_tasks['tempo_estimado'], errors='coerce').fillna(0)
     
     # Obtém feriados brasileiros para os anos relevantes
     years = []
-    for col in ['data_criacao', 'data_fechamento']:
+    for col in ['data_inicio', 'data_fechamento']:
         years.extend(main_tasks[col].dropna().dt.year.unique())
     
     br_holidays = holidays.country_holidays('BR', years=list(set(years)))
@@ -334,15 +334,15 @@ def create_daily_log(df):
     # Itera sobre cada tarefa principal para criar o log diário
     for index, row in main_tasks.iterrows():
         tempo_estimado = row['tempo_estimado']
-        data_criacao = row['data_criacao']
+        data_inicio = row['data_inicio']
         data_fechamento = row['data_fechamento']
         
         # Pula tarefas sem tempo estimado ou datas inválidas
-        if tempo_estimado <= 0 or pd.isna(data_criacao):
+        if tempo_estimado <= 0 or pd.isna(data_inicio):
             continue
         
         # Define data de início
-        start_date = data_criacao.date()
+        start_date = data_inicio.date()
         
         # Define data de fim baseado na data_fechamento ou calcula automaticamente
         if pd.notna(data_fechamento):
