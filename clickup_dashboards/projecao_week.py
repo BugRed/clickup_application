@@ -454,7 +454,7 @@ if not df_full.empty:
     
     # Cria o DataFrame base com log diário
     df_daily_log = create_daily_log(df_full)
-    
+        
     # --- Seção de Gráficos de Capacidade com Filtro de Período ---
     st.subheader("📊 Análise de Capacidade por Período")
     
@@ -664,7 +664,7 @@ if not df_full.empty:
                     
                     # Formata datas
                     df_tasks_display['Data Início'] = pd.to_datetime(df_tasks_display['data_inicio']).dt.strftime('%d/%m/%Y')
-                    df_tasks_display['Prazo'] = pd.to_datetime(df_tasks_display['prazo']).dt.strftime('%d/%m/%Y') if 'prazo' in df_tasks_display.columns else 'N/A'
+                    df_tasks_display['Prazo'] = pd.to_datetime(df_tasks_display['due_date']).dt.strftime('%d/%m/%Y') if 'due_date' in df_tasks_display.columns else 'N/A'
                     
                     # Define cor de status baseado na situação da tarefa
                     def get_task_status_emoji(row):
@@ -715,7 +715,7 @@ if not df_full.empty:
                     # Ordena por horas no período (decrescente) e depois por data de criação
                     # Primeiro ordena o DataFrame original antes de selecionar as colunas
                     df_tasks_display_sorted = df_tasks_display.sort_values(
-                        ['total_horas_periodo', 'data_inicio'], 
+                        ['total_horas_periodo', 'data_criacao'], 
                         ascending=[False, False]
                     )
                     

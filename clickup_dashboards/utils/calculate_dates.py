@@ -338,7 +338,8 @@ def create_daily_log(df):
         data_fechamento = row['data_fechamento']
         
         # Pula tarefas sem tempo estimado ou datas inválidas
-        if tempo_estimado <= 0 or pd.isna(data_inicio):
+        # Retirei tempo_estimado <= 0 or 
+        if pd.isna(data_inicio):
             continue
         
         # Define data de início
